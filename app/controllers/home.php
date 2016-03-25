@@ -9,21 +9,29 @@
 class Home extends Controller{
 	
 	public function __constructor(){
-		echo "Home controller constructor called";
+		
 	}
 	
-	
+	/**
+	 * Default controller
+	 */
 	public function index(){
-		
 		$this->view('home/index');
 		
 	}
 	
 	public function login(){
 		
-		$authentication = true;
-		if($authentication){
-			$this->view('home/myHome', ['loggedIn'=> true]);
+		App::getInstance()->retrieveUser();
+		
+		$testUser1 = App::getInstance()->getUsers()[0];
+		
+		$users = ["user" => $testUser1];
+		
+		$json = json_encode($users);
+		
+		if($testUser1->isLoggedIn()){
+			$this->view('home/myHome', [$json]);
 		}
 		else{
 			$this->index();

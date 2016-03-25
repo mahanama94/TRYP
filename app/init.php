@@ -20,7 +20,7 @@ $GLOBALS['config'] = array(
 				'host' => '127.0.0.1',
 				'username' => 'root',
 				'password' => '',
-				'db' => 'oop'
+				'db' => 'tryp'
 		),
 		'remember' => array(
 				'cookieName' => 'hash',

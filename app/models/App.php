@@ -3,8 +3,18 @@
 class App{
 	
 	private static $instance = null;
+	private $users = [];
 	
+	/**
+	 * 
+	 */
+	public function getUsers(){
+		return $this->users;
+	}
 	
+	/**
+	 * 
+	 */
 	public static function getInstance(){
 		if(!isset(self::$instance)){
 			self::$instance = new App();
@@ -12,6 +22,15 @@ class App{
 		return self::$instance;
 	}
 	
+	
+	/**
+	 * 
+	 */
+	public function retrieveUser(){
+		
+		$newUser = new User();
+		array_push($this->users, $newUser);
+	}
 	
 	/*protected $controller = 'home';
 	

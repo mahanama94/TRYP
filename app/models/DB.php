@@ -62,7 +62,7 @@ class DB{
 	}
 	
 	/**
-	 * Returns the result of the query perdormed
+	 * Returns the result of the query performed
 	 */
 	public function result(){
 		return $this->_result;
@@ -89,7 +89,6 @@ class DB{
 				
 			}
 			
-			//echo var_dump($this->_query);
 			if($this->_query->execute()){
 				$this->_result = $this->_query->fetchAll(PDO::FETCH_OBJ);
 				$this->_count = $this->_query->rowCount();				
@@ -125,7 +124,9 @@ class DB{
 			else{
 				$sql .= " WHERE $condition ";
 			}
+			$counter ++;
 		}
+		
 		if(!$this->query($sql)->error()){
 				return $this;
 		}
@@ -226,6 +227,13 @@ class DB{
 		return false;
 		
 		
+	}
+	
+	/**
+	 * Returns the first row of result of the query
+	 */
+	public function getFirst(){
+		return $this->_result[0];
 	}
 }
 ?>
