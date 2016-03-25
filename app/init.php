@@ -2,7 +2,7 @@
 session_start();
 
 
-require_once 'core/App.php';
+require_once 'models/App.php';
 require_once 'core/Controller.php';
 
 
@@ -34,17 +34,20 @@ $GLOBALS['config'] = array(
 );
 
 
+
 /**
  * Autoloading clases when required
  *
  */
-spl_autoload_register(function($class){
-	require_once '/models/'.$class.'.php';
-});
+spl_autoload_register(function($class){ require_once '/models/'.$class.'.php';});
 
-	//create app object
-	$app = new App();
+
+	require_once 'core/RouteController.php';
 	
+	// create routecontroller for the application
+	
+	$routeController = RouteController::getInstance();
+	$routeController->route();
 
 
 	//require_once '../functions/sanitize.php';

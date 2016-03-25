@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Home controller class
  * 
@@ -7,20 +8,26 @@
  */
 class Home extends Controller{
 	
+	public function __constructor(){
+		echo "Home controller constructor called";
+	}
 	
-	public function index($name= '', $extra = []){
-		$user = $this->model('User');
-		$user->name = $name	;
-		$this->view('home/index', ['name' => $user->name, 'extra' => $extra]);
+	
+	public function index(){
+		
+		$this->view('home/index');
 		
 	}
 	
-	public function test(){
-		echo "Test";
-	}
-	
-	public function bla($params){
-		echo "bla";
+	public function login(){
+		
+		$authentication = true;
+		if($authentication){
+			$this->view('home/myHome', ['loggedIn'=> true]);
+		}
+		else{
+			$this->index();
+		}
 	}
 }
 ?>
