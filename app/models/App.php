@@ -27,11 +27,13 @@ class App{
 	 * 
 	 */
 	public function retrieveUser(){
-		
 		$newUser = new User();
 		array_push($this->users, $newUser);
 	}
 	
+	public function createUser(){
+		
+	}
 	/*protected $controller = 'home';
 	
 	protected $method = 'index';

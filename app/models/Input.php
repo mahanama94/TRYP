@@ -26,6 +26,23 @@ class Input{
 		}
 	}
 	
+	
+	/**
+	 * returns the value corresponding to the paramter passed from the 
+	 * POST superglobals array
+	 * 
+	 * @param value of the key in superglobal $item
+	 * @return value if found else "" string
+	 */
+	public static function getPost($item){
+		if(isset($_POST[$item])){
+			return $_POST[$item];
+		}else{
+			return "";
+		}
+	}
+	
+	
 	/**
 	 * returns the value corresponding to the paramter passed from the 
 	 * POST/ GET superglobals array

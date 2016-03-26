@@ -20,8 +20,12 @@ class Home extends Controller{
 		
 	}
 	
-	public function login(){
-		
+	/**
+	 * Login controller
+	 * Provides login functionality through get methods
+	 * Adds a user to the App
+	 */
+	public function myHome(){
 		App::getInstance()->retrieveUser();
 		
 		$testUser1 = App::getInstance()->getUsers()[0];
@@ -31,11 +35,21 @@ class Home extends Controller{
 		$json = json_encode($users);
 		
 		if($testUser1->isLoggedIn()){
-			$this->view('home/myHome', [$json]);
+			$this->view('home/myHome', $json);
 		}
 		else{
-			$this->index();
+			Redirect::to(Config::get("rewriteBase/public")."/home/login");
 		}
+	}
+	
+	
+	public function login(){
+		$this->view('home/login');
+	}
+	
+	
+	public function signUp(){
+		$this->view("home/signUp");
 	}
 }
 ?>

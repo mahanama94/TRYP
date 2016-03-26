@@ -1,13 +1,1 @@
-<?php 
-
-	if(isset($data['loggedIn'])){
-		echo "loged In";
-		
-	}
-	else{
-		include '../app/views/Forms/subjectForm.php';
-	}
-
-
-?>
- 
+<a href= "<?php echo Config::get('rewriteBase/public').'/home/login';?>">Login </a>

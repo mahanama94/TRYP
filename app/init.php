@@ -29,6 +29,9 @@ $GLOBALS['config'] = array(
 		'session' => array(
 				'sessionName' => 'user',
 				'tokenName' => 'token'
+		),
+		'rewriteBase' => array(
+			'public'=> 'http://localhost/test/TRYP/public' 	
 		)
 
 );

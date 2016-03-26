@@ -1,6 +1,5 @@
 
-
-<form action = "http://localhost/test/TRYP/public/home/login" method = "post">	
+<form action = "<?php echo Config::get("rewriteBase/public").'/home/signup';?>" method = "post">	
 	<p>
 		Index Number : 	<input type="text" name = "userName" >
 		<br>

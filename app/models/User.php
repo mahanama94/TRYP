@@ -40,8 +40,8 @@ class User implements JsonSerializable{
 		
 		$dbConnection = DB::getInstance();
 		
-		$userName = Input::get("userName");
-		$password = Input::get("password");
+		$userName = Input::getPost("userName");
+		$password = Input::getPost("password");
 		
 		$dbConnection->get("user", array("userName = '$userName' ", "password = '$password' "));
 		
@@ -52,13 +52,25 @@ class User implements JsonSerializable{
 			$this->name = $dbConnection->getFirst()->name;
 			//get personal data for the user
 		}
-		
+		else{
+			$dbConnection->get("user", array("userName = '$userName' "));
+			if($dbConnection->count() ==1){
+				Session::flash("passwordError", "Invalid Password");
+				Session::flash("userNameError", "");
+			}
+			else{
+				Session::flash("userNameError", "Cannot find the User");
+				Session::flash("passwordError", "");
+			}
+		}
 	}
 	
 	public function createUser(){
 		//Code to register a new user
 		//update Database
 		//call constructor
+		$newUser = $this::User();
+		return $newUser;
 	}
 	
 	
