@@ -3,6 +3,7 @@
 class User implements JsonSerializable{
 	private $userName, $name, $userId, $loggedIn = false;
 	private $personalData;
+	private $account;
 	
 	/**
 	 * returns thw name of the user
@@ -71,6 +72,11 @@ class User implements JsonSerializable{
 		//call constructor
 		$newUser = $this::User();
 		return $newUser;
+	}
+	
+	public function getUserData(){
+		$data = Array("userName"=> $this->userName, "name" => $this->name, "loggedIn" => true);
+		return $data;
 	}
 	
 	

@@ -15,13 +15,12 @@ class Controller{
 	}
 	
 	/**
-	 * 
 	 * @param name of the view file $name
 	 * @param data to be passed to the file $data
 	 */
 	public function view($name, $data= []){
 		// aquire view php file
-		require_once '../app/views/'.$name.'.php';	
+		require_once '../app/views'.$name.'.php';	
 
 	}
 	

@@ -1,4 +1,3 @@
 <?php
-	include '../app/views/Forms/loginForm.php';
-
+	include '/views/Forms/loginForm.php';
 ?>

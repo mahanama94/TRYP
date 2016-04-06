@@ -1,13 +1,5 @@
-<?php 
-	
-	$data = json_decode($data, true);
-	$user = $data["user"];
-	
-	if(isset($data["error"])){
-		$error = $data["error"];
-	}
-	else{
-		$error = "";
-	}
+<?php
+	$userData = json_decode($data, true);
+	echo var_dump($userData);
 ?>
-<H1>Welcome to my home <?php echo $user["name"]; echo " Logged in as ".$user["userName"]?></H1>
+<H1>Welcome to my home <?php echo $userData["name"]; echo " Logged in as ".$userData["userName"]?></H1>

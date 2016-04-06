@@ -75,7 +75,7 @@ a:hover{
 	margin: 0;
 	padding:0 2em;
 	color : #D4E6F4;
-	background: #8D0D19;
+	background: #4983C2;
 }
 
 #navigation a{
@@ -131,11 +131,23 @@ ul.pages{
  
 div.message{
 	border:2px solid #8D0D19;
-	color:#8D0D19;
+	color:#8D0D19;	
 	font-weight:bold;
 	margin: 1em;
 	padding: 1em;
 }
 
 
-
+.button{
+	width: 50%;
+	background-color: #04356E;
+    border: none;
+    color: black;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    margin: 4px 2px;
+    cursor: pointer;
+}

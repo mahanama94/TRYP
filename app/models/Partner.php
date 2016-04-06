@@ -1,6 +1,6 @@
 <?php
 
-class Partener Extends User{
+class Partener extends User{
 	
 	private $trip = array();
 	

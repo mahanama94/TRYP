@@ -2,7 +2,7 @@
 session_start();
 
 
-require_once 'models/App.php';
+require_once 'models/libs/App.php';
 require_once 'core/Controller.php';
 
 
@@ -31,20 +31,34 @@ $GLOBALS['config'] = array(
 				'tokenName' => 'token'
 		),
 		'rewriteBase' => array(
-			'public'=> 'http://localhost/test/TRYP/public' 	
+			'public'=> 'http://localhost/test/TRYP/public',
+			'app' => 'http://localhost/test/TRYP/app'
 		)
 
 );
 
+	
+	/**
+	 * autoloader function for the spl_autoload_register
+	 * priority is provided for the libraries in autoloading (models/libs)
+	 * 
+	 * @param className $class
+	 */
+	function autoLoad($class){
+		if(file_exists('../app/models/libs/'.$class.'.php')){
+			require_once '/models/libs/'.$class.'.php';
+		}
+		else{
+			require_once '/models/'.$class.'.php';
+		}
+	}
 
-
-/**
- * Autoloading clases when required
- *
- */
-spl_autoload_register(function($class){ require_once '/models/'.$class.'.php';});
-
-
+	/**
+	 * Autoloading clases when required
+	 *	with spl autoloader
+	 */
+	spl_autoload_register("autoLoad");
+	
 	require_once 'core/RouteController.php';
 	
 	// create routecontroller for the application
