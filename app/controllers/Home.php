@@ -17,10 +17,13 @@ class Home extends Controller{
 	 */
 	public function index(){
 		
-		/*$this->view('/layouts/header');
-		$this->view('/layouts/navigation');
+		$this->view('/layouts/topNav');
+		$this->view('/layouts/sideNav');
+		$this->view("/maps/basicMap");
+		$this->view("/profile/profileMini");
 		$this->view('/layouts/footer');
-		*/
+		
+		
 	}
 	
 	/**
@@ -47,12 +50,12 @@ class Home extends Controller{
 	
 	
 	public function login(){
-		$this->view('home/login');
+		$this->view('/home/login');
 	}
 	
 	
 	public function register(){
-		$this->view("home/register");
+		$this->view("/home/register");
 	}
 	
 	public function arduino_update(){
