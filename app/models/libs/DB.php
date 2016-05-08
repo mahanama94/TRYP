@@ -18,7 +18,8 @@ class DB{
 			$_query, 
 			$_error = false , 
 			$_result, 
-			$_count =0;
+			$_count =0,
+			$_auto_increment_count;
 	
 	
 	/**
@@ -62,6 +63,14 @@ class DB{
 	}
 	
 	/**
+	 * returns the auto increment count corresponding to
+	 * the last query executed
+	 */
+	public function incrementCount(){
+		return $this->_auto_increment_count;
+	}
+	
+	/**
 	 * Returns the result of the query performed
 	 */
 	public function result(){
@@ -92,7 +101,8 @@ class DB{
 			
 			if($this->_query->execute()){
 				$this->_result = $this->_query->fetchAll(PDO::FETCH_OBJ);
-				$this->_count = $this->_query->rowCount();		
+				$this->_count = $this->_query->rowCount();
+				$this->_auto_increment_count = $this->_pdo->lastInsertId();
 				$this->_error = false;
 			}
 			else{

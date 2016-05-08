@@ -17,6 +17,10 @@ class ApiSession{
 		return $this->sessionId;
 	}
 	
+	/**
+	 * creates an Api sesssion for a given user name
+	 * @param String $userName
+	 */
 	public function createSession($userName){
 		$dbConnection = DB::getInstance();
 		$dbConnection->action(" SELECT MAX(sessionId) as MAX ", " session ", array("userName = '".$userName."'"));
@@ -27,6 +31,11 @@ class ApiSession{
 		$this->status = true;
 	}
 	
+	/**
+	 * retrieves an Api session for a given user name and a session ID
+	 * @param String $userName
+	 * @param Int $sessionId
+	 */
 	public function retrieveSession($userName, $sessionId){
 		$dbConnection = DB::getInstance();
 		

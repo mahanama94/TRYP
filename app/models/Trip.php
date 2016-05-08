@@ -39,6 +39,13 @@ class Trip{
 		$this->tags = $tags;
 	}
 	
+	/**
+	 * returns the Trip ID
+	 * @return Integer
+	 */
+	public function getTripId(){
+		return $this->tripId;
+	}
 	
 	/**
 	 * start location of the trip
@@ -73,6 +80,13 @@ class Trip{
 	}
 	
 	/**
+	 * sets the trip Id of the trip
+	 * @param unknown $id
+	 */
+	public function setId($id){
+		$this->tripId = $id;
+	}
+	/**
 	 * 
 	 * @param Location $location
 	 */
@@ -81,7 +95,7 @@ class Trip{
 	}
 	
 	/**
-	 * 
+	 * sets the end point of the trip
 	 * @param Location $location
 	 */
 	public function setEnd($location){
@@ -112,8 +126,21 @@ class Trip{
 	 * @return boolean status
 	 */
 	public function register($user) {
+		
+		$app = App::getInstance();
 		$dbConnection = DB::getInstance();
+		
+		// insert to the trip table
 		$dbConnection->insert("trip", $this->toArray()+ array("userId" => $user->getUserId()));
+		
+		// update the trip number
+		$this->tripId = $dbConnection->incrementCount();
+		
+		//insert to the user trip table
+		$dbConnection->insert("user_trip", array("userId"=> $user->getUserId(), "tripId" => $this->getTripId()));
+		// INSER DATA TO OTHER TABLES
+		
+		
 		if($dbConnection->error()){
 			
 			return false;

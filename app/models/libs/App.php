@@ -24,7 +24,7 @@ class App{
 	 * Authorzer for the user
 	 * @var Auth $authorizer
 	 */
-	private $authrizer;
+	private $authorizer;
 	
 	/**
 	 * app instance
@@ -32,12 +32,22 @@ class App{
 	 */
 	private static $instance = null;
 	
+	/**
+	 * Trip manager of the app
+	 * @var TripManager
+	 */
+	private $tripManager;
+
 	private function __construct(){
 		$this->authorizer = new Auth();
 		$this->user = null;
 		$this->appData = null;
+		$this->tripManager = new TripManager();
 	}
 	
+	/**
+	 * returns the instance of the App
+	 */
 	public static function getInstance(){
 		if(self::$instance== null){
 			self::$instance = new App();
@@ -46,87 +56,57 @@ class App{
 		return self::$instance;
 	}
 	
+	/**
+	 * returns the Authorizer of the app
+	 */
 	public function getAuthorizer(){
 		return $this->authorizer;
 	}
 	
+	/**
+	 * adds user tot the app
+	 * @param String $userName
+	 * @param Int $sessionId
+	 */
 	public function addUser($userName, $sessionId){
 		$this->user = new User($userName, $sessionId);
 	}
 	
 	/**
 	 * search for rides for a given userName with given data
-	 * @param $userName
-	 * @param $data
+	 * @param string $userName
+	 * @param data $data
 	 */
 	public function getRides($userName, $data){
 		$this->user= new User($userName);
 		
-		if((isset($data["start"])&& isset($data["end"]))){
+		if(!(isset($data["start"])&& isset($data["end"]))){
 			echo "Data included in the request";
+			
+			if($this->tripManager->findTrips()){
+				echo "Trips found";
+		
+			}
+			else{
+				echo "No trips found";
+			}
 		}
 		else{
 			echo "Data not included in the request";
 		}
 	}
 	
+	public function addRide(){
+		$this->tripManager->createTrip("someData");
+		echo var_dump($this);
+	}
+	
+	/**
+	 * returns the user of the app
+	 */
 	public function getUser(){
 		return $this->user;
 	}
-	
-	
-	/*protected $controller = 'home';
-	
-	protected $method = 'index';
-
-	protected $params =[]; 
-	
-	/**
-	 * App constructor
-	 * App corresponding to the user input URL is formed
-	 * If not found, home/index is formed
-	 */
-	/*public function __construct(){
-		
-		echo "app created";
-		
-		$url = $this->parseUrl();
-		
-		//check for the existance of the controller
-		if(file_exists('../app/controllers/'.$url[0].'php')){
-			$this->controller = $url[0];
-			unset($url[0]);
-		}
-		
-		//aquire the controller
-		require_once '../app/controllers/'.$this->controller.'.php';
-		$this->controller = new $this->controller;
-		
-		//check for the existance of method
-		if(isset($url[1])){
-			
-			if(method_exists($this->controller, $url[1])){
-				$this->method = $url[1];
-				unset($url[1]);
-			}
-		}
-		
-		$this->params = $url ? array_values($url) : [];
-		
-		//Call method in the controller
-		call_user_func_array([$this->controller,$this->method],$this->params);
-	}
-	
-	
-	/**
-	 * Filters the content in the url and return as an array
-	 */
-	/*public function parseUrl() {
-		if(isset($_GET['url'])){
-			
-			return $url= explode('/', filter_var(rtrim($_GET['url'], '/'), FILTER_SANITIZE_URL));
-		}
-	}*/
 	
 }
 ?>
