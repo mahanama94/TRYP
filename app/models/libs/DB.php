@@ -181,6 +181,7 @@ class DB{
 	 * @return true on success else false boolean
 	 */
 	public function insert($table, $fields = array()){
+		$fields = $fields +  array("createdOn"=>date("Y/m/d/h/m/s"));
 		if(count($fields)){
 			$keys = array_keys( $fields);
 
