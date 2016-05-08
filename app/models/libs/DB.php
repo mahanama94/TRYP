@@ -89,6 +89,7 @@ class DB{
 				
 			}
 			
+			
 			if($this->_query->execute()){
 				$this->_result = $this->_query->fetchAll(PDO::FETCH_OBJ);
 				$this->_count = $this->_query->rowCount();		
@@ -116,8 +117,11 @@ class DB{
 	 * @param Conditions for action as an Array	$conditions
 	 */
 	public function action($action, $table, $conditions = array()){
+		
 		$sql = "$action FROM $table ";
 		$counter = 0;
+		
+		
 		foreach($conditions as $condition){
 			if($counter!=0){
 				$sql .= " AND $condition ";
@@ -169,6 +173,7 @@ class DB{
 	public function insert($table, $fields = array()){
 		if(count($fields)){
 			$keys = array_keys( $fields);
+
 			$values = null;
 			$x = 1;
 			
@@ -182,7 +187,6 @@ class DB{
 			
 			$sql = "INSERT INTO $table ( ".implode(" , ", $keys) .") VALUES ({$values})";
 			
-		
 			if(!$this->query($sql, $fields)->error()){
 				return true;
 			}
@@ -218,8 +222,6 @@ class DB{
 		if(!$condition == ""){
 			$sql .=" WHERE $condition";
 		}
-		
-		echo $sql;
 		
 		if(!$this->query($sql,$fields)->error()){
 			return true;

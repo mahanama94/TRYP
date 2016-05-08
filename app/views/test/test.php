@@ -1,6 +1,8 @@
-<?php 
+	<?php 
 	$view = new Controller();
-	$view->view("/lib/HeadLayout");
+	
+	ViewObject::import("HeadLayout");
+	//$view->view("/lib/HeadLayout");
 	$view->view("/lib/BodyLayout");
 	$view->view("/lib/HeadLayout");
 	$view->view("/lib/FooterLayout");
@@ -63,7 +65,7 @@
 	$subMenuItem = new SideNavBarSubMenuItem("subMenu1", $data);
 	
 	$navBarMenuItem1->addWidget($subMenuItem);
-	$navBarMenuItem1->setDataParent($navBarMenu);
+	$navBarMenuItem1->setData("dataParent", $navBarMenu->getName());
 	
 	$navBarMenu->addWidget($navBarMenuItem1);
 	
@@ -78,5 +80,6 @@
 	$body->addWidget($sideNavBar);
 	$body->addWidget($blankPage);
 	$body->addWidget($footer);
+	
 	$layout->setVisible();
 ?>

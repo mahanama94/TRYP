@@ -2,11 +2,10 @@
 
 class Rider extends User{
 	
-	private $requestPool;
+	// include rating objects
 	
-	public function createrequestPool(){
-		
+	public function __construct($username){
+		parent::__construct($username);
 	}
-	
 	
 }

@@ -2,6 +2,13 @@
 
 class Controller{
 	
+	protected  $app;
+	
+	public function __construct(){
+		$this->app = App::getInstance();
+	}
+	
+	
 	/**
 	 * 
 	 * @param model name $model
@@ -18,7 +25,7 @@ class Controller{
 	 * @param name of the view file $name
 	 * @param data to be passed to the file $data
 	 */
-	public function view($name, $data= []){
+	public static function view($name, $data= []){
 		// aquire view php file
 		require_once '../app/views'.$name.'.php';	
 

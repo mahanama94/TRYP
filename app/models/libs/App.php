@@ -1,39 +1,80 @@
 <?php
 
+/**
+ * 
+ * @author Rajith Bhanuka
+ *
+ */
 class App{
 	
-	private static $instance = null;
-	private $users = [];
+	/**
+	 * user data for the application
+	 * @var User
+	 */
+	private $user;
 	
 	/**
-	 * 
+	 * app data for the user
+	 * trip data, request data
+	 * @var array()
 	 */
-	public function getUsers(){
-		return $this->users;
+	private $appData;
+	
+	/**
+	 * Authorzer for the user
+	 * @var Auth $authorizer
+	 */
+	private $authrizer;
+	
+	/**
+	 * app instance
+	 * @var App
+	 */
+	private static $instance = null;
+	
+	private function __construct(){
+		$this->authorizer = new Auth();
+		$this->user = null;
+		$this->appData = null;
 	}
 	
-	/**
-	 * 
-	 */
 	public static function getInstance(){
-		if(!isset(self::$instance)){
+		if(self::$instance== null){
 			self::$instance = new App();
+			return self::$instance;
 		}
 		return self::$instance;
 	}
 	
+	public function getAuthorizer(){
+		return $this->authorizer;
+	}
+	
+	public function addUser($userName, $sessionId){
+		$this->user = new User($userName, $sessionId);
+	}
 	
 	/**
-	 * 
+	 * search for rides for a given userName with given data
+	 * @param $userName
+	 * @param $data
 	 */
-	public function retrieveUser(){
-		$newUser = new User();
-		array_push($this->users, $newUser);
+	public function getRides($userName, $data){
+		$this->user= new User($userName);
+		
+		if((isset($data["start"])&& isset($data["end"]))){
+			echo "Data included in the request";
+		}
+		else{
+			echo "Data not included in the request";
+		}
 	}
 	
-	public function createUser(){
-		
+	public function getUser(){
+		return $this->user;
 	}
+	
+	
 	/*protected $controller = 'home';
 	
 	protected $method = 'index';

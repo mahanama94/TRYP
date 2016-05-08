@@ -3,15 +3,22 @@ class ViewObject{
 	private $counter;
 	private $name;
 	private $widgets;
-	private $data;
+	private $data = null;
 	private $caption;
 	
 	public function __construct($name, $data){
-		$this->data = $data;
+		if($this->data == null){
+			$this->data = $data;
+		}
+		else{
+			$this->data = array_merge($this->data , $data);
+		}
 		$this->name = $name;
 		$this->counter =0;
 		$this->caption = $name;
 	}
+	
+	//getters
 	
 	public function getCaption(){
 		return $this->caption;
@@ -19,13 +26,6 @@ class ViewObject{
 	
 	public function getName(){
 		return $this->name;
-	}
-	
-	public function getData($path){
-		if(isset($this->data[$path])){
-			return $this->data[$path];
-		}
-		return '';
 	}
 	
 	public function getWidget($name){
@@ -41,18 +41,28 @@ class ViewObject{
 		return $this->widgets;
 	}
 	
+	public function getData($key){
+		if(isset($this->data[$key])){
+			return $this->data[$key];
+		}
+		return "";
+	}
+	
+	// setters
+	
+	public function setData($key, $value){
+		$this->data[$key] = $value;
+	}
+	
+	public function setWidget($index , $widget){
+		$this->widgets[$index] = $widget;
+	}
+	
 	public function addWidget($widget){
 		$this->widgets[$this->counter] = $widget;
 		$this->counter++;
 	}
 	
-	public function addWidgetTo($index , $widget){
-		$this->widgets[$index] = $widget;
-	}
-	
-	public function addData($name, $value){
-		$this->data[$name] = $value;
-	}
 	
 	public function setVisible(){
 		
@@ -66,6 +76,10 @@ class ViewObject{
 		for($i=0; $i < sizeof($this->getWidgets()); $i++){
 			$this->getWidgets()[$i]->setVisible();
 		}	
+	}
+	
+	public static function import($templateName){
+		Controller::view("/lib/".$templateName);
 	}
 	
 }

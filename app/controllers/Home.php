@@ -17,12 +17,12 @@ class Home extends Controller{
 	 */
 	public function index(){
 		
-		$this->view('/layouts/topNav');
-		$this->view('/layouts/sideNav');
-		$this->view("/maps/basicMap");
-		$this->view("/profile/profileMini");
-		$this->view('/layouts/footer');
-		
+		//$this->view('/layouts/topNav');
+		//$this->view('/layouts/sideNav');
+		//$this->view("/maps/basicMap");
+		//$this->view("/profile/profileMini");
+		//$this->view('/layouts/footer');
+		$this->view('/forms/loginForm');
 		
 	}
 	
@@ -33,29 +33,48 @@ class Home extends Controller{
 	 */
 	public function myHome(){
 		
-		App::getInstance()->retrieveUser();
+		//$this->view('/home/login');
+		//$_POST["userName"] = "rajith.bhanuka";
+		//$_POST["password"] = "123456";
 		
-		$userData = json_encode(App::getInstance()->getUsers()[0]->getUserData());
 		
-		if(!isset($userData['loggedIn'])){
-			$this->view('/layouts/header');
-			$this->view('/home/myHome', $userData);
-			$this->view('/layouts/footer');
-		}
-		else{
-			Redirect::to(Config::get("rewriteBase/public")."/home/login");
-		}
-		
+		//$this->app->show();
+		echo var_dump($_SESSION);
 	}
 	
 	
 	public function login(){
-		$this->view('/home/login');
+		echo "Login screen";
+		$_POST["userName"] = "mahanama94";
+		$_POST["password"] = "123456789";
+		
+		$this->app->loginUser($_POST["userName"], $_POST["password"]);
+		Redirect::to(Config::get("rewriteBase/public")."/home/myHome");
+		// display the login screen, forgot password, register
 	}
 	
 	
 	public function register(){
-		$this->view("/home/register");
+		$_POST["userName"] = "bhanuka.14";
+		$_POST["password"] = "123456";
+		
+		$this->app->registerUser($_POST["userName"], $_POST["password"], null);
+		$this->app->loginUser($_POST["userName"], $_POST["password"]);
+		//if registration successfull , redirect to the home
+		if(Session::exists("userName")){
+			Redirect::to(Config::get("rewriteBase/public")."/home/myHome");
+		}
+		else{
+			//else refirect to the login screen
+			Redirect::to(Config::get("rewriteBase/public")."/home/login");
+		}
+			
+		
+		
+	}
+	
+	public function test(){
+		echo var_dump($_SESSION);
 	}
 	
 	public function arduino_update(){
