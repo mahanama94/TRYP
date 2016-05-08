@@ -58,16 +58,21 @@ class TripManager{
 	 */
 	public function createTrip($tripData){
 		
+		$start = new Location($tripData["start"]["latitude"], $tripData["start"]["longitude"]);
+		$end = new Location($tripData["end"]["latitude"], $tripData["end"]["longitude"]);
 		// some data
-		$start = new Location(0.00, 0.0000);
-		$end = new Location(80.0000, 80.000);
+		//$start = new Location(0.00, 0.0000);
+		//$end = new Location(80.0000, 80.000);
 		// some waypoints and tags
 		
 		$trip  = new Trip($start, $end);
 		
-		$user = new User("mahanama94");
-		$user->setUserId(3);
-		$trip->register($user);
+		if(!$trip->register(App::getInstance()->getUser())){
+			App::getInstance()->setAppData("Error", true);
+			App::getInstance()->setAppData("Error data", "cannot register the app");
+			return false;
+		}
+		return true;
 	}
 	
 }

@@ -64,12 +64,28 @@ class App{
 	}
 	
 	/**
+	 * returns the user of the app
+	 * @return User app user
+	 */
+	public function getUser(){
+		return $this->user;
+	}
+	
+	/**
 	 * adds user tot the app
 	 * @param String $userName
-	 * @param Int $sessionId
 	 */
-	public function addUser($userName, $sessionId){
-		$this->user = new User($userName, $sessionId);
+	public function setUser($userName){
+		$this->user = new User($userName);
+	}
+	
+	/**
+	 * sets the value passed as the value corresponding to the key 
+	 * @param string $key
+	 * @param  $value
+	 */
+	public function setAppData($key, $value){
+		$this->appData[$key] = $value;
 	}
 	
 	/**
@@ -96,16 +112,22 @@ class App{
 		}
 	}
 	
-	public function addRide(){
-		$this->tripManager->createTrip("someData");
-		echo var_dump($this);
-	}
-	
 	/**
-	 * returns the user of the app
+	 * adds a ride corresponding to the data passed through parameters
+	 * returns the state of the add ride request
+	 * true if success, false otherwise
+	 * @param array() $data
+	 * @return boolean status
 	 */
-	public function getUser(){
-		return $this->user;
+	public function addRide($data){
+		
+		if(!(isset($data["start"])&&isset($data["end"]))){
+			// start and end not provided
+			return false;
+		}
+		$this->tripManager->createTrip($data);
+		echo var_dump($this);
+		return true;
 	}
 	
 }

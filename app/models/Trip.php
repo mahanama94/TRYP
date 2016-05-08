@@ -132,12 +132,14 @@ class Trip{
 		
 		// insert to the trip table
 		$dbConnection->insert("trip", $this->toArray()+ array("userId" => $user->getUserId()));
-		
+
 		// update the trip number
 		$this->tripId = $dbConnection->incrementCount();
 		
 		//insert to the user trip table
 		$dbConnection->insert("user_trip", array("userId"=> $user->getUserId(), "tripId" => $this->getTripId()));
+		
+		echo var_dump($dbConnection);
 		// INSER DATA TO OTHER TABLES
 		
 		

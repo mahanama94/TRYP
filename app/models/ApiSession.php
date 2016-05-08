@@ -9,6 +9,12 @@ class ApiSession{
 		$this->status = false;
 	}
 	
+	/**
+	 * returns the status of the api session
+	 * true if authorized,
+	 * false otherwise
+	 * @return boolean status of the session
+	 */
 	public function getStatus(){
 		return $this->status;
 	}
@@ -23,11 +29,11 @@ class ApiSession{
 	 */
 	public function createSession($userName){
 		$dbConnection = DB::getInstance();
-		$dbConnection->action(" SELECT MAX(sessionId) as MAX ", " session ", array("userName = '".$userName."'"));
-		$sessionId = $dbConnection->getFirst()->MAX;
-		settype($sessionId, "int");
-		$dbConnection->insert(" session ", array(" userName "=> $userName, " sessionId" => $sessionId+1, " status "=> true));
-		$this->sessionId = $sessionId + 1;
+		
+		$dbConnection->insert(" session ", array(" userName "=> $userName, "status" => true));
+		
+		$this->sessionId = $dbConnection->incrementCount();
+		
 		$this->status = true;
 	}
 	

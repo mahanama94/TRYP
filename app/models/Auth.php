@@ -7,7 +7,12 @@ class Auth{
 		$this->apiSession = new ApiSession();
 	}
 	
-	
+	/**
+	 * returns the status of authorization
+	 * true of authorized
+	 * false otherwise
+	 * @return boolean status
+	 */
 	public function getStatus(){
 		return $this->apiSession->getStatus();
 	}
@@ -29,6 +34,9 @@ class Auth{
 		if($dbConnection->count()==1){
 			// update the apiSession object
 			$this->apiSession->createSession($userName);
+		}
+		else{
+			return;
 		}
 	}
 	

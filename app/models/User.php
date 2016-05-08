@@ -9,6 +9,13 @@ class User{
 	public function __construct($username){
 		$this->userName = $username;
 		//retrieve other information from the database
+		
+		$dbConnection = DB::getInstance();
+		$dbConnection->get("user", array("userName = '".$username."'"));
+		
+		$this->setUserId($dbConnection->getFirst()->userId);
+		$this->setName($dbConnection->getFirst()->name);
+		
 	}
 	
 	/**
@@ -38,6 +45,10 @@ class User{
 	
 	public function setUserId($userID){
 		$this->userId = $userID;
+	}
+	
+	public function setName($name){
+		$this->name = $name;
 	}
 }
 ?>
