@@ -79,6 +79,10 @@ class App{
 		$this->user = new User($userName);
 	}
 	
+	public function getTripManager(){
+		return $this->tripManager;
+	}
+	
 	/**
 	 * sets the value passed as the value corresponding to the key 
 	 * @param string $key
@@ -93,22 +97,22 @@ class App{
 	 * @param string $userName
 	 * @param data $data
 	 */
-	public function getRides($userName, $data){
+	public function getRides($userName, $data = null){
 		$this->user= new User($userName);
 		
 		if(!(isset($data["start"])&& isset($data["end"]))){
-			echo "Data included in the request";
+			// data availabe in th request
 			
 			if($this->tripManager->findTrips()){
-				echo "Trips found";
+				// trips found
 		
 			}
 			else{
-				echo "No trips found";
+				//No trips found
 			}
 		}
 		else{
-			echo "Data not included in the request";
+			// data not included in the request
 		}
 	}
 	
@@ -126,7 +130,6 @@ class App{
 			return false;
 		}
 		$this->tripManager->createTrip($data);
-		echo var_dump($this);
 		return true;
 	}
 	

@@ -138,8 +138,7 @@ class Trip{
 		
 		//insert to the user trip table
 		$dbConnection->insert("user_trip", array("userId"=> $user->getUserId(), "tripId" => $this->getTripId()));
-		
-		echo var_dump($dbConnection);
+
 		// INSER DATA TO OTHER TABLES
 		
 		
@@ -154,7 +153,7 @@ class Trip{
 	 * returns the data of the object to an array
 	 * @return array 
 	 */
-	private function toArray(){
+	public function toArray(){
 		// assign data to an array for database access
 		$array = array("start_lat" => $this->start->getLatitude(), "start_long" => $this->start->getLatitude());
 		$array  = $array + array("end_lat" => $this->end->getLatitude(), "end_long"=>$this->end->getLongitude());

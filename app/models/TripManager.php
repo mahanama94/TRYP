@@ -13,7 +13,7 @@ class TripManager{
 	 * returns the trips in trip manager as an array
 	 * @return Trip[]
 	 */
-	public function getTrips(){
+	public function getTripList(){
 		return $this->tripList;
 	}
 	
@@ -39,10 +39,15 @@ class TripManager{
 		foreach($dbConnection->result() as $tripData){
 			
 			$trip = new Trip();
+			$trip->setId($tripData->tripId);
 			$trip->setStart(new Location($tripData->start_lat, $tripData->start_long));
+			$trip->setEnd(new Location($tripData->end_lat, $tripData->end_long));
+			
+			// retrive and update data for the trip object created
+			
 			$this->tripList[$this->getCount()] = $trip;
 			$this->count = $this->count +1;
-			// retrive and update data for the trip object created
+			
 		}
 		
 		if($this->tripList == null){
@@ -54,24 +59,23 @@ class TripManager{
 	
 	/**
 	 * creates a trip corresponding to the data passed
-	 * @param unknown $tripData
+	 * @param array() $tripData
 	 */
 	public function createTrip($tripData){
 		
 		$start = new Location($tripData["start"]["latitude"], $tripData["start"]["longitude"]);
 		$end = new Location($tripData["end"]["latitude"], $tripData["end"]["longitude"]);
-		// some data
-		//$start = new Location(0.00, 0.0000);
-		//$end = new Location(80.0000, 80.000);
-		// some waypoints and tags
-		
 		$trip  = new Trip($start, $end);
+		
+		//UPDATE TRIP DATA
 		
 		if(!$trip->register(App::getInstance()->getUser())){
 			App::getInstance()->setAppData("Error", true);
 			App::getInstance()->setAppData("Error data", "cannot register the app");
 			return false;
 		}
+		$this->tripList =  Array();
+		$this->tripList[0] = $trip;
 		return true;
 	}
 	

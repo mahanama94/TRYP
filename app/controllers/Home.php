@@ -33,13 +33,13 @@ class Home extends Controller{
 	 */
 	public function myHome(){
 		
-		//$this->view('/home/login');
-		//$_POST["userName"] = "rajith.bhanuka";
-		//$_POST["password"] = "123456";
+		$jsonurl = "http://localhost/test/TRYP/public/api/addRide";
+		$json = file_get_contents($jsonurl);
+		echo $json;
+		echo "json ".var_dump($json);
+		$json_output = json_decode($json, true);
 		
-		
-		//$this->app->show();
-		echo var_dump($_SESSION);
+		echo var_dump($json_output);
 	}
 	
 	
