@@ -1,6 +1,10 @@
 <?php
 class Api{
 	
+	/**
+	 * data of the api session
+	 * @var Array 
+	 */
 	private $data;
 	
 	public function __construct(){
@@ -9,6 +13,8 @@ class Api{
 	
 	/**
 	 * Gets a new authorization for the access
+	 * return true if authorized, false otherwise
+	 * @return boolean status of authorization
 	 */
 	public function getAuth(){
 		
@@ -95,7 +101,9 @@ class Api{
 			"end" => array(
 					"latitude" => 2.00000,
 					"longitude" => 2.00000
-			)
+			),
+			
+			"dateTime" => "2016-05-20-08-30"
 				
 		);
 		
@@ -120,17 +128,42 @@ class Api{
 			$this->data["tripData"] = array();
 			$count =0;
 			foreach($app->getTripManager()->getTripList() as $trip){
-				$this->data["tripData"][$count] = $trip->toArray() + array("tripId"=>$trip->getTripId());
-				$count++;
+				//echo var_dump($trip);
 			}
 		}
 		else{
 			$this->data["status"] = "fail";
 		}
+		
 		echo json_encode($this->data);
 		
 	}
 	
+	/**
+	 * creates a request for a ride for a given request pool,
+	 * if request pool is not provided, creates a new request pool
+	 */
+	public function createRequest(){
+		
+		// get data from post
+		$data = array(
+		
+		
+		);
+		
+		if(!$this->getAuth()){
+			// not authorized , terminate the session
+			echo json_encode($this->data);
+			return;
+		}
+		
+		$app = App::getInstance();
+		$app->setUser($this->data["userName"]);
+		
+		$app = App::getInstance()->createRequest($data);
+		
+		echo json_encode($this->data);
+	}
 	
 	public function test(){
 		

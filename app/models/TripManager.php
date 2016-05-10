@@ -4,6 +4,12 @@ class TripManager{
 	private $tripList;
 	private $count;
 	
+	/**
+	 * 
+	 * @var Request
+	 */
+	private $requestPool;
+	
 	public function __construct(){
 		$this->tripList = array();
 		$this->count = 0;
@@ -65,18 +71,32 @@ class TripManager{
 		
 		$start = new Location($tripData["start"]["latitude"], $tripData["start"]["longitude"]);
 		$end = new Location($tripData["end"]["latitude"], $tripData["end"]["longitude"]);
-		$trip  = new Trip($start, $end);
+		$trip  = new Trip(null,$start, $end);
 		
 		//UPDATE TRIP DATA
 		
-		if(!$trip->register(App::getInstance()->getUser())){
+		/*if(!$trip->register(App::getInstance()->getUser())){
 			App::getInstance()->setAppData("Error", true);
 			App::getInstance()->setAppData("Error data", "cannot register the app");
 			return false;
-		}
+		}*/
 		$this->tripList =  Array();
 		$this->tripList[0] = $trip;
 		return true;
+	}
+	
+	/**
+	 * creates a trip request for the request data provided
+	 * @param array() $requestData
+	 */
+	public function createRequest($requestData){
+		
+		// check pool number
+		$this->requestPool = new RequestPool();
+		
+		// check reuest data
+		// create request
+		// add request
 	}
 	
 }

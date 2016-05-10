@@ -38,6 +38,9 @@ class App{
 	 */
 	private $tripManager;
 
+	/**
+	 * constructor
+	 */
 	private function __construct(){
 		$this->authorizer = new Auth();
 		$this->user = null;
@@ -58,6 +61,7 @@ class App{
 	
 	/**
 	 * returns the Authorizer of the app
+	 * @return Auth authorizer
 	 */
 	public function getAuthorizer(){
 		return $this->authorizer;
@@ -72,6 +76,14 @@ class App{
 	}
 	
 	/**
+	 * returns the trip manager of the app
+	 * @return TripManager trip manager
+	 */
+	public function getTripManager(){
+		return $this->tripManager;
+	}
+	
+	/**
 	 * adds user tot the app
 	 * @param String $userName
 	 */
@@ -79,9 +91,6 @@ class App{
 		$this->user = new User($userName);
 	}
 	
-	public function getTripManager(){
-		return $this->tripManager;
-	}
 	
 	/**
 	 * sets the value passed as the value corresponding to the key 
@@ -133,5 +142,10 @@ class App{
 		return true;
 	}
 	
+	
+	public function createRequest($data){
+		
+		$this->tripManager->createRequest($data);
+	}
 }
 ?>

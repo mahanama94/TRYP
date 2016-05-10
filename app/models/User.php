@@ -2,20 +2,23 @@
 
 class User{
 	
-	protected $userName, $name, $userId, $loggedIn = false;
+	protected $userName, $name, $userId;
 	protected $personalData;
 	protected $account;
 	
 	public function __construct($username){
-		$this->userName = $username;
-		//retrieve other information from the database
 		
 		$dbConnection = DB::getInstance();
 		$dbConnection->get("user", array("userName = '".$username."'"));
-		
-		$this->setUserId($dbConnection->getFirst()->userId);
-		$this->setName($dbConnection->getFirst()->name);
-		
+		if(!$dbConnection->error()){
+			$this->userName = $username;
+			$this->setUserId($dbConnection->getFirst()->userId);
+			$this->setName($dbConnection->getFirst()->name);
+			// retrieeve otherdata from the database
+		}
+		else{
+			$this->setName(null);
+		}
 	}
 	
 	/**
@@ -39,16 +42,29 @@ class User{
 		return $this->name;
 	}
 	
-	public function setUserName($userName){
+	protected function setUserName($userName){
 		$this->userName = $userName;
 	}
 	
-	public function setUserId($userID){
+	protected function setUserId($userID){
 		$this->userId = $userID;
 	}
 	
+	/**
+	 * sets the name of the user to the name passes
+	 * returns true if successfull, false otherwise
+	 * @param String $name
+	 * @return boolean
+	 */
 	public function setName($name){
+		
+		$dbConnection = DB::getInstance();
+		$dbConnection->update("user", "userName ='".$this->getUserName()."'", array("name"=> $name));
+		if($dbConnection->error()){
+			return false;
+		}
 		$this->name = $name;
+		return true;
 	}
 }
 ?>

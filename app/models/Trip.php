@@ -27,16 +27,50 @@ class Trip{
 	private $tags = null;
 	
 	/**
+	 * rettrieves a Trip if the trip Id is passed,
+	 * else creates a new trip and sets the id from the database
 	 * 
+	 * @param int $id
 	 * @param Location $start
 	 * @param Location $end
 	 * @param Location[] $wayPoints
+	 * @param Tag[] $tags
 	 */
-	public function __construct($start= null , $end = null, $wayPoints = Array(), $tags = array()){
-		$this->start = $start;
-		$this->end = $end;
-		$this->waypoints = $wayPoints;
-		$this->tags = $tags;
+	public function __construct($id,$start= null , $end = null, $wayPoints = Array(), $tags = array()){
+		
+		$dbConnection = DB::getInstance();
+		$user = App::getInstance()->getUser();
+		
+		if($id){
+			// retrive data from database
+			$dbConnection->get("trip", array("tripId = '".$id."'"));
+			
+			if(!$dbConnection->error()){
+				$this->tripId = $id;
+				$this->start = new Location($dbConnection->getFirst()->start_lat, $dbConnection->getFirst()->start_long);
+				$this->end = new Location($dbConnection->getFirst()->start_lat, $dbConnection->getFirst()->start_long);
+				
+				// search for tags, wapoints and add
+			}
+		}
+		else{
+			// add to database
+			$dbConnection->insert("trip", array(
+				"userId" => $user->getUserId(),
+				"start_lat" => $start->getLatitude(),
+				"start_long" => $start->getLongitude(),
+				"end_lat" => $end->getLatitude(),
+				"end_long" => $end->getLongitude(),
+			));
+			
+			$this->tripId = $dbConnection->incrementCount();
+			$this->start = $start;
+			$this->end = $end;
+			$this->waypoints = $wayPoints;
+			$this->tags = $tags;
+			
+			// add tags, waypoints to the database
+		}
 	}
 	
 	/**
@@ -87,19 +121,46 @@ class Trip{
 		$this->tripId = $id;
 	}
 	/**
-	 * 
+	 * Updates the start location of the trip
+	 * return true for success, false otherwise
 	 * @param Location $location
+	 * @return boolean status
 	 */
 	public function setStart($location){
-		$this->start = $location;
+		
+		$dbConnection = DB::getInstance();
+		
+		$dbConnection->update("user", "tripId = '".$this->getTripId()."'", array(
+					"start_lat" => $location->getLatitude(),
+					"start_long" => $location->getLongitude()
+		));
+		
+		if(!$dbConnection->error()){
+			$this->start = $location;
+			return true;
+		}
+		return false;
 	}
 	
 	/**
-	 * sets the end point of the trip
+	 * Updates the start location of the trip
+	 * return true for success, false otherwise
 	 * @param Location $location
+	 * @return boolean status
 	 */
 	public function setEnd($location){
-		$this->end = $location;
+		$dbConnection = DB::getInstance();
+		
+		$dbConnection->update("user", "tripId = '".$this->getTripId()."'", array(
+					"end_lat" => $location->getLatitude(),
+					"end_long" => $location->getLongitude()
+		));
+		
+		if(!$dbConnection->error()){
+			$this->end = $location;
+			return true;
+		}
+		return false;
 	}
 	
 	/**
@@ -107,6 +168,7 @@ class Trip{
 	 * @param Location[] $wayPoints
 	 */
 	public function setWayPoints($wayPoints){
+		// ADD DATABASE QUERIES
 		$this->waypoints = $wayPoints;
 	}
 	
@@ -115,6 +177,7 @@ class Trip{
 	 * @param Tag[] $tags
 	 */
 	public function setTags($tags){
+		// ADD DATABASE QUERIES
 		$this->tags = $tags;
 	}
 	
