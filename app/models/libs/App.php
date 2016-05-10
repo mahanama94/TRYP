@@ -34,9 +34,15 @@ class App{
 	
 	/**
 	 * Trip manager of the app
-	 * @var TripManager
+	 * @var Manager
 	 */
-	private $tripManager;
+	private $Manager;
+	
+	/**
+	 * User manager of the app
+	 * @var UserManager
+	 */
+	private $userManager;
 
 	/**
 	 * constructor
@@ -46,6 +52,7 @@ class App{
 		$this->user = null;
 		$this->appData = null;
 		$this->tripManager = new TripManager();
+		$this->userManager = new UserManager();
 	}
 	
 	/**
@@ -144,7 +151,6 @@ class App{
 	
 	
 	public function createRequest($data){
-		
 		$this->tripManager->createRequest($data);
 	}
 }

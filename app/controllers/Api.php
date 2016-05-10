@@ -8,7 +8,7 @@ class Api{
 	private $data;
 	
 	public function __construct(){
-		$this->data = array();
+		$this->data = $_POST;
 	}
 	
 	/**
@@ -71,18 +71,22 @@ class Api{
 			$app->getRides($userName, $conditions);
 
 			$this->data["status"] = "success";
-			$this->data["tripData"] = array();
+			$this->data["trip"] = array();
 			$count =0;
 			foreach($app->getTripManager()->getTripList() as $trip){
-				$this->data["tripData"][$count] = $trip->toArray() + array("tripId"=>$trip->getTripId());
+				$this->data["trip"][$count] = $trip->toArray() + array("tripId"=>$trip->getTripId());
 				$count++;
 			}
+			$this->data["tripCount"] = sizeof($this->data["trip"]);
 		}
 		else{
 			$this->data["status"]="fail";
 		}
 		
 		echo json_encode($this->data);
+		
+		echo var_dump(json_decode(json_encode($this->data), true));
+		//echo var_dump($this->data);
 	}
 	
 	/**
@@ -165,6 +169,15 @@ class Api{
 		echo json_encode($this->data);
 	}
 	
+	public function test2(){
+		$dbConnection = DB::getInstance();
+		$dbConnection->get("requestpool_request", array( "requestPoolId = 1"));
+		foreach($dbConnection->result() as $trip){
+			echo var_dump($trip);
+		}
+		echo var_dump($dbConnection);
+		
+	}
 	public function test(){
 		
 		if(!$this->getAuth()){

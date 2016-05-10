@@ -6,18 +6,30 @@ class User{
 	protected $personalData;
 	protected $account;
 	
-	public function __construct($username){
-		
-		$dbConnection = DB::getInstance();
-		$dbConnection->get("user", array("userName = '".$username."'"));
-		if(!$dbConnection->error()){
-			$this->userName = $username;
-			$this->setUserId($dbConnection->getFirst()->userId);
-			$this->setName($dbConnection->getFirst()->name);
-			// retrieeve otherdata from the database
+	/**
+	 * constructs a user for the parameters passed
+	 * default register false, password null retrieves a user from the database
+	 * if register true, creates a new user and updates the database
+	 * @param unknown $username
+	 * @param string $register
+	 * @param unknown $password
+	 */
+	public function __construct($username , $register = false, $password = null){
+		if(!register){
+			$dbConnection = DB::getInstance();
+			$dbConnection->get("user", array("userName = '".$username."'"));
+			if(!$dbConnection->error()){
+				$this->userName = $username;
+				$this->setUserId($dbConnection->getFirst()->userId);
+				$this->setName($dbConnection->getFirst()->name);
+				// retrieeve otherdata from the database
+			}
+			else{
+				$this->setName(null);
+			}
 		}
 		else{
-			$this->setName(null);
+			// add the user to the database
 		}
 	}
 	
@@ -42,14 +54,6 @@ class User{
 		return $this->name;
 	}
 	
-	protected function setUserName($userName){
-		$this->userName = $userName;
-	}
-	
-	protected function setUserId($userID){
-		$this->userId = $userID;
-	}
-	
 	/**
 	 * sets the name of the user to the name passes
 	 * returns true if successfull, false otherwise
@@ -64,6 +68,22 @@ class User{
 			return false;
 		}
 		$this->name = $name;
+		return true;
+	}
+	
+	/**
+	 * sets the password of the user to the password passed
+	 * returns true if successfull, false otherwise
+	 * @param string $password
+	 * @return boolean status
+	 */
+	public function setPassword($password){
+		$dbConnection = DB::getInstance();
+		$dbConnection->update("user", "userName ='".$this->getUserName()."'", array("password"=> $password));
+		if($dbConnection->error()){
+			return false;
+		}
+		$this->password = $password;
 		return true;
 	}
 }

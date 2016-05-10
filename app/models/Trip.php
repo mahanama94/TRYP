@@ -27,6 +27,12 @@ class Trip{
 	private $tags = null;
 	
 	/**
+	 * Contains the request for the trip
+	 * @var Request[]
+	 */
+	private $requests;
+	
+	/**
 	 * rettrieves a Trip if the trip Id is passed,
 	 * else creates a new trip and sets the id from the database
 	 * 
@@ -111,6 +117,19 @@ class Trip{
 	 */
 	public function getTags(){
 		return $this->tags;
+	}
+	
+	public function getRequests(){
+		if($this->requests == null){
+			$dbConnection = DB::getInstance();
+			
+			$dbConnection->get("trip_request", array("tripId = ".$this->getTripId()));
+			
+			foreach($dbConnection->result() as $requestData){
+				$request = new Request($requestData->requestId);
+			}
+		}
+		return $this->requests;
 	}
 	
 	/**

@@ -1,31 +1,47 @@
 <?php
+
+/**
+ * Manages functions relating to trips
+ * 
+ * Add trips
+ * search trips
+ * 
+ * @author Rajith Bhanuka
+ *
+ */
 class TripManager{
-	
-	private $tripList;
-	private $count;
 	
 	/**
 	 * 
-	 * @var Request
+	 * @var Trip[]
 	 */
-	private $requestPool;
+	private $tripList = null;
 	
-	public function __construct(){
-		$this->tripList = array();
-		$this->count = 0;
+	/**
+	 * Constructor
+	 * creates a trip manager with an empty $requestPool and a $tripList
+	 */
+	public function __construct($data = null){
+		parent::__construct($data);
+		$this->tripList = null;
 	}
 	
 	/**
-	 * returns the trips in trip manager as an array
+	 * returns the trips in trip manager as an array relating to the user of the app
 	 * @return Trip[]
 	 */
 	public function getTripList(){
+		
+		$dbConnection = DB::getInstance();
+		$dbConnection->get("user_trip", array("userId = ". App::getInstance()->getUser()->getUserId()));
+		
+		foreach($dbConnection->result() as $tripData){
+			$trip = new Trip($tripData->tripId);
+			$this->tripList[sizeof($this->tripList)] = $trip;
+		}
 		return $this->tripList;
 	}
 	
-	public function getCount(){
-		return $this->count;
-	}
 	/**
 	 * finds trips corresponding to the conditions passed as parameters
 	 * returns the state of the search
@@ -44,16 +60,14 @@ class TripManager{
 
 		foreach($dbConnection->result() as $tripData){
 			
-			$trip = new Trip();
+			$trip = new Trip($tripData->tripId);
 			$trip->setId($tripData->tripId);
 			$trip->setStart(new Location($tripData->start_lat, $tripData->start_long));
 			$trip->setEnd(new Location($tripData->end_lat, $tripData->end_long));
 			
 			// retrive and update data for the trip object created
 			
-			$this->tripList[$this->getCount()] = $trip;
-			$this->count = $this->count +1;
-			
+			$this->tripList[sizeof($this->tripList)] = $trip;
 		}
 		
 		if($this->tripList == null){
@@ -65,7 +79,9 @@ class TripManager{
 	
 	/**
 	 * creates a trip corresponding to the data passed
+	 * returns true for success, false otherwise
 	 * @param array() $tripData
+	 * @return boolean status
 	 */
 	public function createTrip($tripData){
 		
@@ -75,28 +91,28 @@ class TripManager{
 		
 		//UPDATE TRIP DATA
 		
-		/*if(!$trip->register(App::getInstance()->getUser())){
-			App::getInstance()->setAppData("Error", true);
-			App::getInstance()->setAppData("Error data", "cannot register the app");
-			return false;
-		}*/
-		$this->tripList =  Array();
-		$this->tripList[0] = $trip;
+		$this->getTripList()[sizeof($this->tripList)] = $trip;
 		return true;
 	}
 	
 	/**
-	 * creates a trip request for the request data provided
-	 * @param array() $requestData
+	 * creates a trip request for the trip provided
+	 * returns true for success, false otherwise
+	 * @param Trip $trip
+	 * @param int $requestPoolId
+	 * @return boolean status
 	 */
-	public function createRequest($requestData){
+	public function createRequest($trip, $requestPoolId = null){
 		
-		// check pool number
-		$this->requestPool = new RequestPool();
+		 //check for the existance in a given pool
+		if(!($requestPoolId == null)){
+			$this->requestPool = new RequestPool($requestData["requestPoolId"]);
+		}
+		else{
+			$this->requestPool = new RequestPool();
+		}
 		
-		// check reuest data
-		// create request
-		// add request
+		$request = new Request($trip);
+		return ($this->requestPool->addRequest($request));
 	}
-	
 }
