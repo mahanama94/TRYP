@@ -43,6 +43,7 @@ class Api{
 		if($this->app->getAuthorizer()->getStatus()){
 			//authorised for the actions
 			$this->data["userName"] = $userName;
+			$this->response["authorization"] = "success";
 			return true;
 		}
 		else{
