@@ -60,7 +60,11 @@ class Trip{
 			}
 		}
 		else{
-			// add to database
+			/**
+			 * insert to the database
+			 */
+			
+			// trip table
 			$dbConnection->insert("trip", array(
 				"userId" => $user->getUserId(),
 				"start_lat" => $start->getLatitude(),
@@ -68,12 +72,19 @@ class Trip{
 				"end_lat" => $end->getLatitude(),
 				"end_long" => $end->getLongitude(),
 			));
-			
+
 			$this->tripId = $dbConnection->incrementCount();
 			$this->start = $start;
 			$this->end = $end;
 			$this->waypoints = $wayPoints;
 			$this->tags = $tags;
+				
+			//user_trip table
+			$dbConnection->insert("user_trip", array(
+				"userId" => $user->getUserId(),
+				"tripId"=> $this->getTripId()				
+			));
+
 			
 			// add tags, waypoints to the database
 		}
@@ -237,9 +248,25 @@ class Trip{
 	 */
 	public function toArray(){
 		// assign data to an array for database access
-		$array = array("start_lat" => $this->start->getLatitude(), "start_long" => $this->start->getLatitude());
-		$array  = $array + array("end_lat" => $this->end->getLatitude(), "end_long"=>$this->end->getLongitude());
-		return $array;
+		
+		$returnArray = array(
+			"tripId" => $this->getTripId(),
+			"start" => $this->getStart()->toArray(),
+			"end" => $this->getEnd()->toArray()
+		);
+		
+		$count = 0;
+		foreach ($this->getWayPoints() as $location){
+			$returnArray["wayPoints"][$count] = $location->toArray(); 
+			$count++;
+		}
+		
+		$count = 0;
+		foreach ($this->getTags() as $tag){
+			$returnArray["tags"][$count] = $tag->toArray();
+		}
+			
+		return $returnArray;
 	}
 	
 }

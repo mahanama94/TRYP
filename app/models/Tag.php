@@ -24,4 +24,7 @@ class Tag{
 		return $this->data;
 	}
 	
+	public function toArray(){
+		return array("data" => $this->getDayta());
+	}
 }

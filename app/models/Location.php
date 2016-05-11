@@ -23,4 +23,15 @@ class Location{
 		return $this->longitude;
 	}
 	
+	/**
+	 * returns the location as an array
+	 * @return array
+	 */
+	public function toArray(){
+		return array(
+				"latitude" => $this->getLatitude(),
+				"longitude" => $this->getLongitude()
+		);
+	}
+	
 }

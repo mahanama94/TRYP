@@ -9,13 +9,19 @@
  * @author Rajith Bhanuka
  *
  */
-class TripManager{
+class TripManager extends Manager{
 	
 	/**
 	 * 
 	 * @var Trip[]
 	 */
 	private $tripList = null;
+	
+	/**
+	 * 
+	 * @var Trip
+	 */
+	private $lastTrip;
 	
 	/**
 	 * Constructor
@@ -40,6 +46,10 @@ class TripManager{
 			$this->tripList[sizeof($this->tripList)] = $trip;
 		}
 		return $this->tripList;
+	}
+	
+	public function getLastTrip(){
+		return $this->lastTrip;
 	}
 	
 	/**
@@ -85,12 +95,12 @@ class TripManager{
 	 */
 	public function createTrip($tripData){
 		
+		// check for the existance of data in the trip data return false
 		$start = new Location($tripData["start"]["latitude"], $tripData["start"]["longitude"]);
 		$end = new Location($tripData["end"]["latitude"], $tripData["end"]["longitude"]);
 		$trip  = new Trip(null,$start, $end);
-		
 		//UPDATE TRIP DATA
-		
+		$this->lastTrip = $trip;
 		$this->getTripList()[sizeof($this->tripList)] = $trip;
 		return true;
 	}

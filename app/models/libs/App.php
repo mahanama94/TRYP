@@ -43,6 +43,12 @@ class App{
 	 * @var UserManager
 	 */
 	private $userManager;
+	
+	/**
+	 * 
+	 * @var LocationManager $locationManager
+	 */
+	private $locationManager;
 
 	/**
 	 * constructor
@@ -52,7 +58,8 @@ class App{
 		$this->user = null;
 		$this->appData = null;
 		$this->tripManager = new TripManager();
-		$this->userManager = new UserManager();
+		$this->locationManager = new LocationManager();
+		//$this->userManager = new UserManager();
 	}
 	
 	/**
@@ -88,6 +95,14 @@ class App{
 	 */
 	public function getTripManager(){
 		return $this->tripManager;
+	}
+	
+	/**
+	 * returns the location manager of the app
+	 * @return LocationManager
+	 */
+	public function getLocationManager(){
+		return $this->locationManager;
 	}
 	
 	/**
@@ -140,13 +155,7 @@ class App{
 	 * @return boolean status
 	 */
 	public function addRide($data){
-		
-		if(!(isset($data["start"])&&isset($data["end"]))){
-			// start and end not provided
-			return false;
-		}
-		$this->tripManager->createTrip($data);
-		return true;
+		return $this->tripManager->createTrip($data);
 	}
 	
 	

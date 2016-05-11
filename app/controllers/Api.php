@@ -2,13 +2,27 @@
 class Api{
 	
 	/**
-	 * data of the api session
+	 * app of the Api
+	 * @var App
+	 */
+	private $app;
+	/**
+	 * request data for the request
 	 * @var Array 
 	 */
 	private $data;
 	
+	/**
+	 * response data for the request
+	 * @var Array
+	 */
+	private $response;
+	
 	public function __construct(){
 		$this->data = $_POST;
+		$this->app = App::getInstance();
+		$this->response = array();
+		$this->response["error"] = array();
 	}
 	
 	/**
@@ -24,20 +38,19 @@ class Api{
 		
 		$userName = "mahanama94";
 		$password = "123456789";
-		$app = App::getInstance();
 		// get authorization from the authorizer 
-		$app->getAuthorizer()->getAuth($userName, $password);
-		if($app->getAuthorizer()->getStatus()){
+		$this->app->getAuthorizer()->getAuth($userName, $password);
+		if($this->app->getAuthorizer()->getStatus()){
 			//authorised for the actions
-			$this->data["authorization"] = "success";
 			$this->data["userName"] = $userName;
 			return true;
 		}
 		else{
-			$this->data["authorization"] = "fail";
-			$this->data["error"] = "NoAuthority";
+			$this->response["error"]["authorization"] = "NoAuthority";
 			return false;
 		}
+		
+
 	}
 	
 	
@@ -47,9 +60,9 @@ class Api{
 	 * @param unknown $userName
 	 * @param unknown $sessionId
 	 */
-	public function auth($userName, $sessionId){
-		$app = App::getInstance();
-		$app->getAuthorizer()->retireveAuth($userName, $sessionId);
+	public function auth(){
+		$this->getAuth();
+		echo json_encode($this->response);
 	}
 	
 	/**
@@ -62,18 +75,17 @@ class Api{
 		$userName = "mahanama94";
 		$sessionId = '7';
 		$conditions = "";
-		$app = App::getInstance();
 		
 		$this->auth($userName, $sessionId);
 
-		if($app->getAuthorizer()->getStatus()){
+		if($this->app->getAuthorizer()->getStatus()){
 
-			$app->getRides($userName, $conditions);
+			$this->app->getRides($userName, $conditions);
 
 			$this->data["status"] = "success";
 			$this->data["trip"] = array();
 			$count =0;
-			foreach($app->getTripManager()->getTripList() as $trip){
+			foreach($this->app->getTripManager()->getTripList() as $trip){
 				$this->data["trip"][$count] = $trip->toArray() + array("tripId"=>$trip->getTripId());
 				$count++;
 			}
@@ -83,19 +95,15 @@ class Api{
 			$this->data["status"]="fail";
 		}
 		
+		echo var_dump($this);
 		echo json_encode($this->data);
-		
-		echo var_dump(json_decode(json_encode($this->data), true));
-		//echo var_dump($this->data);
 	}
 	
 	/**
 	 * add a ride corresponding to the credentials provided through the post
 	 */
 	public function addRide(){
-		
-		$this->data = $_POST;
-	
+
 		//sample data 
 		$tripData = array(
 			"start" => array(
@@ -117,8 +125,7 @@ class Api{
 			return;
 		}
 		
-		$app = App::getInstance();
-		$app->setUser($this->data["userName"]);
+		$this->app->setUser($this->data["userName"]);
 		if(!isset($tripData)){
 			// trip data not set, terminate the session
 			$this->data["error"] = "Trip Data not available";
@@ -126,20 +133,17 @@ class Api{
 			return ;
 		}
 		
-		if($app->addRide($tripData)){
+		if($this->app->addRide($tripData)){
 			// ride data added successfully
-			$this->data["status"] = "success";
-			$this->data["tripData"] = array();
-			$count =0;
-			foreach($app->getTripManager()->getTripList() as $trip){
-				//echo var_dump($trip);
-			}
+			$this->response["status"] = "success";
+			$lastTrip = $this->app->getTripManager()->getLastTrip();
+			$this->response["tripData"] = $lastTrip->toArray();
 		}
 		else{
-			$this->data["status"] = "fail";
+			$this->response["status"] = "fail";
 		}
 		
-		echo json_encode($this->data);
+		echo json_encode($this->response);
 		
 	}
 	
@@ -149,6 +153,8 @@ class Api{
 	 */
 	public function createRequest(){
 		
+		
+		//NOT COMPLETED
 		// get data from post
 		$data = array(
 		
@@ -166,7 +172,7 @@ class Api{
 		
 		$app = App::getInstance()->createRequest($data);
 		
-		echo json_encode($this->data);
+		echo json_encode($this->response);
 	}
 	
 	public function test2(){
@@ -178,21 +184,17 @@ class Api{
 		echo var_dump($dbConnection);
 		
 	}
-	public function test(){
+	
+	
+	public function locationUpdate(){
 		
-		if(!$this->getAuth()){
-			// not authorized , terminate the session
-			echo json_encode($this->data);
-			return;
+		if($this->getAuth()){
+			$this->app->setUser($this->data["userName"]);
+			$this->response["status"] = $this->app->getLocationManager()->updateLocation(null);
+			// get errors from the manager
 		}
+		echo json_encode($this->response);
 		
-		$app = App::getInstance();
-		$app->setUser($this->data["userName"]);
-
-		$testTrip  = new Trip(new Location(8.2222, 1.0000), new Location(1.0000, 1.0000));
-		$testTrip->register(App::getInstance()->getUser());
-		
-		echo var_dump($app);
 	}
 	
 }

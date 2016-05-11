@@ -11,16 +11,16 @@ class User{
 	 * default register false, password null retrieves a user from the database
 	 * if register true, creates a new user and updates the database
 	 * @param unknown $username
-	 * @param string $register
+	 * @param boolean $register
 	 * @param unknown $password
 	 */
 	public function __construct($username , $register = false, $password = null){
-		if(!register){
+		if(!$register){
 			$dbConnection = DB::getInstance();
 			$dbConnection->get("user", array("userName = '".$username."'"));
 			if(!$dbConnection->error()){
 				$this->userName = $username;
-				$this->setUserId($dbConnection->getFirst()->userId);
+				$this->userId = $dbConnection->getFirst()->userId;
 				$this->setName($dbConnection->getFirst()->name);
 				// retrieeve otherdata from the database
 			}
@@ -85,6 +85,26 @@ class User{
 		}
 		$this->password = $password;
 		return true;
+	}
+	
+	/**
+	 * updates the location data of the user with the current location
+	 * as the location passed
+	 * @param Location $location
+	 */
+	public function addLocation($location){
+		$dbConnection = DB::getInstance();
+		
+		$dbConnection->insert("user_location", array(
+			"userId" => $this->getUserId(),
+			"location_lat" => $location->getLatitude(),
+			"location_long" => $location->getLongitude()
+		));
+		return (!$dbConnection->error());
+	}
+	
+	public function getLastLocation(){
+		
 	}
 }
 ?>
