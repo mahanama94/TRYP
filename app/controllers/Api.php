@@ -23,6 +23,8 @@ class Api{
 		$this->app = App::getInstance();
 		$this->response = array();
 		$this->response["error"] = array();
+		//$this->data["userName"] = "malaka.14";
+		//$this->data["password"] = "123654";
 	}
 	
 	/**
@@ -36,6 +38,7 @@ class Api{
 		if(isset($this->data["userName"]) && isset($this->data["password"])){
 			$userName = $this->data["userName"];
 			$password = $this->data["password"];
+			
 			
 			// get authorization from the authorizer 
 			$this->app->getAuthorizer()->getAuth($userName, $password);
@@ -192,7 +195,7 @@ class Api{
 	public function getUserData(){
 		if($this->getAuth()){
 			$this->response["status"] = "success";
-			$this->response["user data"] = $this->app->getUserData($this->data["userName"]);
+			$this->response["userData"] = $this->app->getUserData($this->data["userName"]);
 		}
 		else{
 			$this->response["status"] = "fail";
