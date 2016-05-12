@@ -33,21 +33,22 @@ class Api{
 	public function getAuth(){
 		
 		// get username and password from the request data
-		//$userName = $this->data["userName"];
-		//$password = $this->data["password"];
-		
-		$userName = "mahanama94";
-		$password = "123456789";
-		// get authorization from the authorizer 
-		$this->app->getAuthorizer()->getAuth($userName, $password);
-		if($this->app->getAuthorizer()->getStatus()){
-			//authorised for the actions
-			$this->data["userName"] = $userName;
-			$this->response["authorization"] = "success";
-			$this->app->setUser($this->data["userName"]);
-			return true;
+		if(isset($this->data["userName"]) && isset($this->data["password"])){
+			$userName = $this->data["userName"];
+			$password = $this->data["password"];
+			
+			// get authorization from the authorizer 
+			$this->app->getAuthorizer()->getAuth($userName, $password);
+			if($this->app->getAuthorizer()->getStatus()){
+				//authorised for the actions
+				$this->data["userName"] = $userName;
+				$this->response["authorization"] = "success";
+				$this->app->setUser($this->data["userName"]);
+				return true;
+			}
 		}
 		else{
+			$this->response["authorization"] = "fail";
 			$this->response["error"]["authorization"] = "NoAuthority";
 			return false;
 		}
@@ -61,7 +62,7 @@ class Api{
 	 * @param unknown $sessionId
 	 */
 	public function auth(){
-		$this->getAuth();
+		$x = $this->getAuth();
 		echo json_encode($this->response);
 	}
 	
@@ -184,6 +185,17 @@ class Api{
 			if($this->app->rejectRequest($requestId)){
 				$this->response["status"] = "success";
 			}
+		}
+		echo json_encode($this->response);
+	}
+	
+	public function getUserData(){
+		if($this->getAuth()){
+			$this->response["status"] = "success";
+			$this->response["user data"] = $this->app->getUserData($this->data["userName"]);
+		}
+		else{
+			$this->response["status"] = "fail";
 		}
 		echo json_encode($this->response);
 	}

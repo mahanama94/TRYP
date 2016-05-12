@@ -209,6 +209,21 @@ class App{
 		return $this->getRequestManager()->rejectRequest($requestId);
 	}
 	
+	/**
+	 * returns the userdata of the specified user
+	 * returns null otherwise
+	 * @param int $userId
+	 * @return array/ null 
+	 */
+	public function getUserData($userName = null, $fullData = false){
+		if($userName == null){
+			return $this->getUser()->toArray($fullData);
+		}
+		// check for authority
+		$user = new User($userName);
+		return $user->toArray();
+	}
+	
 	public function cancelRequest($requestId){
 		return $this->getRequestManager()->cancelRideRequest($requestId);
 	}

@@ -106,5 +106,19 @@ class User{
 	public function getLastLocation(){
 		
 	}
+	
+	public function toArray($fullData = false){
+		$data = array(
+			"User Id" => $this->getUserId(),
+			"User Name" => $this->getUserName(),
+			"Name" => $this->getName()
+		);
+		
+		if(!$fullData){
+			return $data;
+		}
+		// get other non public data
+		return $data;
+	}
 }
 ?>
