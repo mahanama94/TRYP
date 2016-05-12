@@ -44,6 +44,7 @@ class Api{
 			//authorised for the actions
 			$this->data["userName"] = $userName;
 			$this->response["authorization"] = "success";
+			$this->app->setUser($this->data["userName"]);
 			return true;
 		}
 		else{
@@ -54,8 +55,6 @@ class Api{
 
 	}
 	
-	
-	// add user session info stuff later
 	/**
 	 * retrieve the existing user authorization
 	 * @param unknown $userName
@@ -72,32 +71,29 @@ class Api{
 	 */
 	public function getRides(){
 		
-		//get credentials from through http requests
-		$userName = "mahanama94";
-		$sessionId = '7';
+		//get credentials from through http reque
 		$conditions = "";
 		
-		$this->auth($userName, $sessionId);
-
-		if($this->app->getAuthorizer()->getStatus()){
-
-			$this->app->getRides($userName, $conditions);
-
-			$this->data["status"] = "success";
-			$this->data["trip"] = array();
-			$count =0;
-			foreach($this->app->getTripManager()->getTripList() as $trip){
-				$this->data["trip"][$count] = $trip->toArray() + array("tripId"=>$trip->getTripId());
-				$count++;
+		if($this->getAuth()){
+			
+			if($this->app->getAuthorizer()->getStatus()){
+	
+				$this->app->getRides($this->data["userName"], $conditions);
+	
+				$this->response["status"] = "success";
+				$this->response["trip"] = array();
+				$count =0;
+				foreach($this->app->getTripManager()->getTripList() as $trip){
+					$this->response["trip"][$count] = $trip->toArray() + array("tripId"=>$trip->getTripId());
+					$count++;
+				}
+				$this->response["tripCount"] = sizeof($this->response["trip"]);
 			}
-			$this->data["tripCount"] = sizeof($this->data["trip"]);
+			else{
+				$this->data["status"]="fail";
+			}
 		}
-		else{
-			$this->data["status"]="fail";
-		}
-		
-		echo var_dump($this);
-		echo json_encode($this->data);
+		echo json_encode($this->response);
 	}
 	
 	/**
@@ -148,54 +144,66 @@ class Api{
 		
 	}
 	
+	// format the response
+	
 	/**
 	 * creates a request for a ride for a given request pool,
 	 * if request pool is not provided, creates a new request pool
 	 */
 	public function createRequest(){
 		
-		
-		//NOT COMPLETED
-		// get data from post
-		$data = array(
-		
-		
-		);
-		
-		if(!$this->getAuth()){
-			// not authorized , terminate the session
-			echo json_encode($this->data);
-			return;
+		if($this->getAuth()){			
+			if($this->app->createRequest($this->data)){
+				$this->response["status"] = "success";
+				$this->response["x"] ="aomedar";
+			}
+			echo json_encode($this->response);
 		}
-		
-		$app = App::getInstance();
-		$app->setUser($this->data["userName"]);
-		
-		$app = App::getInstance()->createRequest($data);
-		
-		echo json_encode($this->response);
 	}
 	
-	public function test2(){
-		$dbConnection = DB::getInstance();
-		$dbConnection->get("requestpool_request", array( "requestPoolId = 1"));
-		foreach($dbConnection->result() as $trip){
-			echo var_dump($trip);
-		}
-		echo var_dump($dbConnection);
-		
-	}
-	
-	
+	/**
+	 * updates location of the user of the request to the location passed in post
+	 */
 	public function locationUpdate(){
-		
 		if($this->getAuth()){
 			$this->app->setUser($this->data["userName"]);
 			$this->response["status"] = $this->app->getLocationManager()->updateLocation(null);
-			// get errors from the manager
 		}
 		echo json_encode($this->response);
 		
 	}
+	
+	/**
+	 * rejects the request for a given requestId
+	 * 
+	 */
+	public function rejectRequest(){
+		
+		$requestId = 12;
+		if($this->getAuth()){
+			if($this->app->rejectRequest($requestId)){
+				$this->response["status"] = "success";
+			}
+		}
+		echo json_encode($this->response);
+	}
+	
+	public function cancelRequest(){
+		
+		$requestId = 6;
+		
+		if($this->getAuth()){
+			if($this->app->cancelRequest($requestId)){
+				$this->response["status"] = "success";
+			}
+			else{
+				$this->response["status"] = "fail";
+			}
+		}
+		echo json_encode($this->response);
+	}
+	// ------------------------ CHECK -------------------------------------------
+	
+	
 	
 }

@@ -130,6 +130,10 @@ class Trip{
 		return $this->tags;
 	}
 	
+	/**
+	 * rerurns the requests for the trip
+	 * @return Request[] $requests
+	 */
 	public function getRequests(){
 		if($this->requests == null){
 			$dbConnection = DB::getInstance();
@@ -143,13 +147,6 @@ class Trip{
 		return $this->requests;
 	}
 	
-	/**
-	 * sets the trip Id of the trip
-	 * @param unknown $id
-	 */
-	public function setId($id){
-		$this->tripId = $id;
-	}
 	/**
 	 * Updates the start location of the trip
 	 * return true for success, false otherwise
@@ -212,34 +209,23 @@ class Trip{
 	}
 	
 	/**
-	 * registers the trip to the data repository
-	 * returns the status of the action
-	 * true if successfull, false otherwise
-	 * @param  User    user
-	 * @return boolean status
+	 * Adds the request to the Trip
+	 * returns true for successs, false otherwise
+	 * @param Request $request
+	 * @return boolean $status
 	 */
-	public function register($user) {
-		
-		$app = App::getInstance();
+	public function addRequest($request){
 		$dbConnection = DB::getInstance();
 		
-		// insert to the trip table
-		$dbConnection->insert("trip", $this->toArray()+ array("userId" => $user->getUserId()));
-
-		// update the trip number
-		$this->tripId = $dbConnection->incrementCount();
-		
-		//insert to the user trip table
-		$dbConnection->insert("user_trip", array("userId"=> $user->getUserId(), "tripId" => $this->getTripId()));
-
-		// INSER DATA TO OTHER TABLES
-		
-		
-		if($dbConnection->error()){
-			
-			return false;
+		$dbConnection->insert("trip_request", array(
+				"tripId" => $this->getTripId(),
+				"requestId" => $request->getRequestId()
+		));
+		if(!$dbConnection->error()){
+			$this->getRequests()[sizeof($this->getRequests())] = $request;
+			return true;
 		}
-		return true;
+		return false;
 	}
 	
 	/**
@@ -248,24 +234,26 @@ class Trip{
 	 */
 	public function toArray(){
 		// assign data to an array for database access
-		
 		$returnArray = array(
 			"tripId" => $this->getTripId(),
 			"start" => $this->getStart()->toArray(),
 			"end" => $this->getEnd()->toArray()
 		);
 		
-		$count = 0;
-		foreach ($this->getWayPoints() as $location){
-			$returnArray["wayPoints"][$count] = $location->toArray(); 
-			$count++;
+		if(!$this->getWayPoints() ==  null){
+			$count = 0;
+			foreach ($this->getWayPoints() as $location){
+				$returnArray["wayPoints"][$count] = $location->toArray(); 
+				$count++;
+			}
 		}
 		
-		$count = 0;
-		foreach ($this->getTags() as $tag){
-			$returnArray["tags"][$count] = $tag->toArray();
-		}
-			
+		if(!$this->getTags() == null){
+			$count = 0;
+			foreach ($this->getTags() as $tag){
+				$returnArray["tags"][$count] = $tag->toArray();
+			}
+		}			
 		return $returnArray;
 	}
 	

@@ -22,7 +22,7 @@ class UserManager extends Manager{
 	 * constructor
 	 * @param unknown $data
 	 */
-	public function __construct($data){
+	public function __construct($data = null){
 		parent::__construct($data);
 		$this->profileData = null;
 	}

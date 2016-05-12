@@ -88,14 +88,21 @@ class RequestPool{
 		
 		$dbConnection->insert("requestpool_request", array(
 				"requestPoolId"=> $this->getRequestPoolId(),
-				"requeestId" => $newRequest->getRequestId()
+				"requestId" => $newRequest->getRequestId()
 		));
 		
 		if(!$dbConnection->error()){
 			$this->getRequests()[sizeof($this->getRequests())] = $newRequest;
-			$newRequest->attach($this);
 			return true;
 		}
 		return false;
+	}
+	
+	public function toArray(){
+		$returnData = array("requestPoolId" => $this->getRequestPoolId());
+		
+		if($this->getRequests() != null){
+			
+		}
 	}
 }

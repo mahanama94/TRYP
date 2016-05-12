@@ -18,20 +18,19 @@ class Request{
 	 * Constructor 
 	 * if requestId = null, a new request is created and default data is assigned
 	 * else retrieves the request from database and updates the request data
-	 * @param Trip $trip
 	 * @param int $requestId
 	 */
-	public function __construct($trip, $requestId = null){
+	public function __construct($requestId = null){
 		$dbConnection = DB::getInstance();
 		if($requestId == null){
 			// Update request table
 			$dbConnection->insert("request", array("status"=> true));
 			$this->requestId = $dbConnection->incrementCount();
+			$dbConnection->insert("user_request", array(
+					"userId" => App::getInstance()->getUser()->getUserId(),
+					"requestId" => $this->getRequestId()
+			));
 			$this->status = true;
-			
-			// insert to the trip_request table
-			$dbConnection->insert("trip_request", array("tripId" => $trip->getTripId(), "requestId"=> $this->getRequestId()));
-				
 		}
 		else{
 			// an existing request
@@ -64,11 +63,17 @@ class Request{
 		if($dbConnection->error()){
 			return false;
 		}
-		$this->status = status;
+		$this->status = $status;
 		// NOTIFY OBSERVERS
 		return true;
 	}
 	
+	public function toArray(){
+		$returnArray = array(
+				"requestId" => $this->getRequestId(),
+				"status" => $this->getStatus()
+		);
+	}
 	
 }
 ?>

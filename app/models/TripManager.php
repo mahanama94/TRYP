@@ -4,7 +4,8 @@
  * Manages functions relating to trips
  * 
  * Add trips
- * search trips
+ * Search trips
+ * Retrieve trips
  * 
  * @author Rajith Bhanuka
  *
@@ -21,7 +22,7 @@ class TripManager extends Manager{
 	 * 
 	 * @var Trip
 	 */
-	private $lastTrip;
+	private $lastTrip = null;
 	
 	/**
 	 * Constructor
@@ -48,7 +49,14 @@ class TripManager extends Manager{
 		return $this->tripList;
 	}
 	
+	/**
+	 * returns the last trip registered by the user of the application
+	 * @return Trip $lastTrip
+	 */
 	public function getLastTrip(){
+		if($this->lastTrip == null){
+			$this->lastTrip = $this->getTripList()[sizeof($this->getTripList()) - 1];
+		}
 		return $this->lastTrip;
 	}
 	
@@ -71,7 +79,6 @@ class TripManager extends Manager{
 		foreach($dbConnection->result() as $tripData){
 			
 			$trip = new Trip($tripData->tripId);
-			$trip->setId($tripData->tripId);
 			$trip->setStart(new Location($tripData->start_lat, $tripData->start_long));
 			$trip->setEnd(new Location($tripData->end_lat, $tripData->end_long));
 			
@@ -101,28 +108,23 @@ class TripManager extends Manager{
 		$trip  = new Trip(null,$start, $end);
 		//UPDATE TRIP DATA
 		$this->lastTrip = $trip;
-		$this->getTripList()[sizeof($this->tripList)] = $trip;
+		$this->getTripList()[sizeof($this->getTripList())] = $trip;
 		return true;
 	}
 	
 	/**
-	 * creates a trip request for the trip provided
-	 * returns true for success, false otherwise
-	 * @param Trip $trip
-	 * @param int $requestPoolId
-	 * @return boolean status
+	 * returns the trip for the given TripId
+	 * @param int $tripId
+	 * @return Trip
 	 */
-	public function createRequest($trip, $requestPoolId = null){
-		
-		 //check for the existance in a given pool
-		if(!($requestPoolId == null)){
-			$this->requestPool = new RequestPool($requestData["requestPoolId"]);
-		}
-		else{
-			$this->requestPool = new RequestPool();
-		}
-		
-		$request = new Request($trip);
-		return ($this->requestPool->addRequest($request));
+	public function getTrip($tripId){
+		return new Trip($tripId);
+	}
+	
+	public function cancelTrip($tripId){
+		//$trip = new Trip($tripId);
+		// crete trip
+		// get the user of the trip
+		// if current user and user same, delete
 	}
 }

@@ -33,10 +33,16 @@ class App{
 	private static $instance = null;
 	
 	/**
-	 * Trip manager of the app
-	 * @var Manager
+	 * 
+	 * @var TripManager
 	 */
-	private $Manager;
+	private $tripManager = null;
+	
+	/**
+	 * 
+	 * @var RequestManager
+	 */
+	private $requestManager = null;
 	
 	/**
 	 * User manager of the app
@@ -55,11 +61,6 @@ class App{
 	 */
 	private function __construct(){
 		$this->authorizer = new Auth();
-		$this->user = null;
-		$this->appData = null;
-		$this->tripManager = new TripManager();
-		$this->locationManager = new LocationManager();
-		//$this->userManager = new UserManager();
 	}
 	
 	/**
@@ -94,6 +95,9 @@ class App{
 	 * @return TripManager trip manager
 	 */
 	public function getTripManager(){
+		if($this->tripManager == null){
+			$this->tripManager = new TripManager();
+		}
 		return $this->tripManager;
 	}
 	
@@ -102,9 +106,33 @@ class App{
 	 * @return LocationManager
 	 */
 	public function getLocationManager(){
+		if($this->locationManager == null){
+			$this->locationManager = new LocationManager();
+		}
 		return $this->locationManager;
 	}
 	
+	/**
+	 * returns the request manager of the app
+	 * @return RequestManager
+	 */
+	public function getRequestManager(){
+		if($this->requestManager == null){
+			$this->requestManager = new RequestManager();
+		}
+		return $this->requestManager;
+	}
+	
+	/**
+	 * returns the user manager of the app
+	 * @return UserManager
+	 */
+	public function getUserManager(){
+		if($this->userManager == null){
+			$this->userManager = new UserManager();
+		}
+		return $this->userManager;
+	}
 	/**
 	 * adds user tot the app
 	 * @param String $userName
@@ -131,10 +159,11 @@ class App{
 	public function getRides($userName, $data = null){
 		$this->user= new User($userName);
 		
+		// check for the availability of data
 		if(!(isset($data["start"])&& isset($data["end"]))){
 			// data availabe in th request
 			
-			if($this->tripManager->findTrips()){
+			if($this->getTripManager()->findTrips()){
 				// trips found
 		
 			}
@@ -155,12 +184,33 @@ class App{
 	 * @return boolean status
 	 */
 	public function addRide($data){
-		return $this->tripManager->createTrip($data);
+		return $this->getTripManager()->createTrip($data);
 	}
 	
 	
+	/**
+	 * creates a new request for a given trip
+	 * @param array $data
+	 * @return boolean $status
+	 */
 	public function createRequest($data){
-		$this->tripManager->createRequest($data);
+
+		// check data - check the existance of a poolID
+		return $this->getRequestManager()->createRequest($data["tripId"], $data["requestPoolId"]);
+	}
+	
+	/**
+	 * rejects the request passed through the paramters
+	 * returns true if success, false otherwise
+	 * @param int $requestId
+	 * @return boolean $state
+	 */
+	public function rejectRequest($requestId){
+		return $this->getRequestManager()->rejectRequest($requestId);
+	}
+	
+	public function cancelRequest($requestId){
+		return $this->getRequestManager()->cancelRideRequest($requestId);
 	}
 }
 ?>
